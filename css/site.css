@@ -2113,3 +2113,61 @@ body.rolou .header__in { background: rgba(18,18,20,.82); box-shadow: 0 14px 34px
 
 /* Certificações: 3 cards lado a lado no desktop; no tablet o terceiro ocupa a linha inteira */
 @media (min-width: 768px) and (max-width: 1023px) { #certificacoes .bento > :last-child { grid-column: span 6; } }
+
+
+/* ============ Celular: home, busca e barra de baixo (rodada 25/09) ============ */
+.busca__mais { display: none; }
+@media (max-width: 767px) {
+  /* banner: foto em tela cheia, texto por cima, controles dentro */
+  .banner { padding: 0; background: var(--grafite-900); }
+  .banner__slide { position: relative; height: 100svh; min-height: 600px; max-height: 780px; border-radius: 0; }
+  .banner__img { position: absolute; inset: 0; aspect-ratio: auto; border-radius: 0; }
+  .banner__img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,18,20,.55) 0%, rgba(18,18,20,.05) 26%, rgba(18,18,20,.45) 50%, rgba(18,18,20,.92) 82%, rgba(18,18,20,.96) 100%); }
+  .banner__texto { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding-top: 110px; padding-bottom: 64px; }
+  .banner__texto .sub { font-size: 15px; line-height: 23px; }
+  .banner__texto .btn { min-height: 48px; }
+  .banner__controles { bottom: 26px; }
+  .banner__controles .container { justify-content: center; }
+  .banner__setas { display: none; }
+  .busca { margin-top: 0; }
+  /* busca: só cidade e quartos; o resto fica em /imoveis/ */
+  .busca__campos > .campo:nth-of-type(2), .busca__campos > .campo:nth-of-type(3), .busca__campos > .campo:nth-of-type(5), .busca__campos > .campo:nth-of-type(6) { display: none; }
+  .busca__mais { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 14px; font-weight: 500; color: var(--vermelho-600); text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
+  .busca__mais .ico { width: 16px; height: 16px; }
+}
+@media (max-width: 1023px) {
+  /* barra de baixo compacta: WhatsApp e Ligar só com ícone, Agendar visita como ação principal */
+  :root { --canais-mobile-h: 72px; }
+  .canais--mob { padding: 0 12px calc(10px + env(safe-area-inset-bottom)); background: transparent; }
+  .canais--mob .canais__in { height: 56px; display: flex; gap: 8px; padding: 6px; border-radius: 16px; background: rgba(255,255,255,.94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 10px 30px -10px rgba(18,18,20,.35); border: 1px solid rgba(18,18,20,.06); overflow: visible; }
+  .canais--mob .canais__btn { height: 44px; border-radius: 12px; font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: 0; border: 0; }
+  .canais--mob .canais__btn--wa, .canais--mob .canais__btn--ligar { flex: 0 0 44px; padding: 0; }
+  .canais--mob .canais__btn--wa span, .canais--mob .canais__btn--ligar span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .canais--mob .canais__btn--visita { flex: 1 1 auto; }
+  .canais--mob .canais__btn--ligar { background: var(--grafite-900); border-left: 0; }
+  .canais--mob .canais__btn svg { width: 20px; height: 20px; }
+}
+@media (max-width: 767px) {
+  .banner__img::after { background: linear-gradient(180deg, rgba(18,18,20,.55) 0%, rgba(18,18,20,.12) 16%, rgba(18,18,20,.62) 34%, rgba(18,18,20,.9) 54%, rgba(18,18,20,.97) 100%); }
+  .banner__texto { padding-bottom: 116px; }
+  .banner__controles { bottom: calc(var(--canais-mobile-h) + 18px); }
+}
+@media (max-width: 767px) {
+  /* specs do banner em 2 colunas, compactas, para o texto não subir para trás do cabeçalho */
+  .banner__specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 14px; }
+  .banner__specs .spec { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 17px; min-width: 0; }
+  .banner__specs .spec .ico { width: 30px; height: 30px; padding: 6px; flex: 0 0 30px; border-radius: 9px; }
+  .banner__texto { padding-top: 96px; }
+  .banner__texto .display { margin-top: 6px; }
+  .banner__tag { margin-bottom: 10px; }
+}
+
+/* Barra de canais no celular: escondida no topo da página, entra depois que o banner/hero sai da tela */
+.canais--mob { opacity: 0; transform: translateY(110%); pointer-events: none; }
+body.canais-visivel .canais--mob { opacity: 1; transform: translateY(0); pointer-events: auto; }
+body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .canais { transition: none; } }
+@media (max-width: 767px) {
+  .banner__texto { padding-bottom: 80px; }
+  .banner__controles { bottom: 30px; }
+}

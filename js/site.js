@@ -27,10 +27,13 @@
 
   /* ---------- rolagem: topbar, canais, rodapé ---------- */
   var rodape = $('.rodape');
+  // a barra de canais só aparece depois que o topo da página (banner ou hero) sai inteiro da tela
+  var topoPagina = $('.banner, .hero-escuro, .emp-topo');
   function aoRolar() {
     var y = w.scrollY || w.pageYOffset;
     body.classList.toggle('rolou', y > 80);
-    body.classList.toggle('canais-visivel', y > 400);
+    var limite = topoPagina ? topoPagina.getBoundingClientRect().bottom + y - 8 : 400;
+    body.classList.toggle('canais-visivel', y > limite);
   }
   on(w, 'scroll', aoRolar, { passive: true }); aoRolar();
   if (rodape && 'IntersectionObserver' in w) {
