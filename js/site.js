@@ -260,12 +260,19 @@
   if (banner) {
     var slides = $$('.banner__slide', banner), bolinhas = $$('.banner__bolinhas button', banner), idx = 0, timer = null;
     function mostra(i) { idx = (i + slides.length) % slides.length; slides.forEach(function (s, k) { s.classList.toggle('ativo', k === idx); s.setAttribute('aria-hidden', k === idx ? 'false' : 'true'); }); bolinhas.forEach(function (b, k) { b.setAttribute('aria-selected', k === idx ? 'true' : 'false'); }); }
-    function auto() { parar(); if (reduz || slides.length < 2) return; timer = setInterval(function () { mostra(idx + 1); }, 7000); }
+    var pausado = !!reduz, pausa = $('.banner__pausa', banner);
+    function auto() { parar(); if (pausado || slides.length < 2) return; timer = setInterval(function () { mostra(idx + 1); }, 6000); }
+    function marcaPausa() { if (!pausa) return; pausa.setAttribute('aria-pressed', pausado ? 'true' : 'false'); pausa.setAttribute('aria-label', pausado ? 'Retomar a troca automática' : 'Pausar a troca automática'); pausa.classList.toggle('pausado', pausado); }
+    on(pausa, 'click', function () { pausado = !pausado; marcaPausa(); if (pausado) parar(); else auto(); });
+    marcaPausa();
+    // clicar na foto ou no texto do slide leva à página do empreendimento (botões e links mantêm a própria ação)
+    slides.forEach(function (s) { var url = s.getAttribute('data-href'); if (!url) return; on(s, 'click', function (e) { if (e.target.closest('a, button')) return; w.location.href = url; }); });
     function parar() { if (timer) clearInterval(timer); timer = null; }
     on($('.seta--prox', banner), 'click', function () { mostra(idx + 1); auto(); });
     on($('.seta--ant', banner), 'click', function () { mostra(idx - 1); auto(); });
     bolinhas.forEach(function (b, k) { on(b, 'click', function () { mostra(k); auto(); }); });
-    on(banner, 'mouseenter', parar); on(banner, 'mouseleave', auto); on(banner, 'focusin', parar); on(banner, 'focusout', auto);
+    // só pausa com o foco do teclado dentro do banner; o mouse parado em cima não trava mais a troca
+    on(banner, 'focusin', function (e) { if (e.target !== pausa) parar(); }); on(banner, 'focusout', auto);
     on(banner, 'keydown', function (e) { if (e.key === 'ArrowRight') { mostra(idx + 1); } if (e.key === 'ArrowLeft') { mostra(idx - 1); } });
     var tx = null; on(banner, 'touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true }); on(banner, 'touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) mostra(dx < 0 ? idx + 1 : idx - 1); tx = null; auto(); });
     mostra(0); auto();

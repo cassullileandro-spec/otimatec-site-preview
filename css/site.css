@@ -2171,3 +2171,87 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
   .banner__texto { padding-bottom: 80px; }
   .banner__controles { bottom: 30px; }
 }
+
+/* =====================================================================
+   HOME — ajustes do cliente (PDF "site home parte 1", 26/09/2026)
+   ===================================================================== */
+
+/* banner: slide inteiro clicável, tag sólida, linhas de specs e selos */
+.banner__slide[data-href] { cursor: pointer; }
+.banner__tag .tag--em-obras { background: var(--st-obras); color: var(--branco); }
+.banner__tag .tag--pronto { background: var(--st-pronto); color: var(--branco); }
+.banner__texto .display { max-width: 16ch; }
+.banner__linhas { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0; margin-top: 16px; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--branco); }
+.banner__linhas span + span::before { content: ""; display: inline-block; width: 4px; height: 4px; margin: 0 14px 3px; border-radius: 50%; background: var(--vermelho-600); vertical-align: middle; }
+.banner__texto .sub { margin-top: 10px; }
+.banner__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.banner__chips span { padding: 7px 12px; border: 1px solid rgba(255,255,255,.35); border-radius: var(--raio-etiqueta); background: rgba(255,255,255,.08); color: var(--branco); font-size: 11px; line-height: 14px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+@media (max-width: 767px) {
+  .banner__linhas { font-size: 13px; line-height: 20px; }
+  .banner__linhas span + span::before { margin: 0 10px 3px; }
+}
+.banner__pausa .ico-play { display: none; fill: currentColor; stroke: none; }
+.banner__pausa.pausado .ico-play { display: block; }
+.banner__pausa.pausado .ico-pausa { display: none; }
+
+/* busca: botão vermelho e do tamanho de um campo */
+.busca__btn.btn--primario { font-size: 15px; }
+@media (min-width: 1280px) {
+  .busca__campos { grid-template-columns: repeat(3, minmax(0, 1fr)) 150px; }
+  .busca__btn { grid-row: 1 / span 2; align-self: center; min-height: 52px; padding: 0 18px; font-size: 15px; }
+}
+
+/* nossa história + números */
+.historia__numeros > .eyebrow { margin-bottom: 14px; }
+.historia .card-num .legenda { margin-top: 8px; }
+.card-num .numero-grande--texto { font-size: 22px !important; line-height: 28px !important; }
+
+/* mais de uma década + por que escolher */
+.decada { display: grid; gap: 32px; align-items: start; }
+@media (min-width: 1024px) { .decada { grid-template-columns: 1.2fr 1fr; gap: 72px; } }
+.decada .apoio { color: rgba(255,255,255,.72); }
+.decada__porque { border-left: 2px solid var(--vermelho-600); padding-left: 24px; }
+.decada__porque .h3 { color: var(--branco); }
+.decada__porque p { margin-top: 12px; color: rgba(255,255,255,.72); }
+
+/* política de qualidade + certificações */
+.qualidade .h2 { max-width: 28ch; }
+.qualidade__texto { margin-top: 8px; color: var(--cinza-500); }
+.qualidade__texto p { margin: 0 0 16px; }
+@media (min-width: 1024px) { .qualidade__texto { columns: 2; column-gap: 48px; } .qualidade__texto p { break-inside: avoid; } }
+.qualidade__texto b { color: var(--grafite-900); }
+.certs__titulo { margin-top: 48px; }
+.certs { display: grid; gap: 16px; margin-top: 20px; }
+@media (min-width: 768px) { .certs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cert { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 28px 22px 24px; background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio-card); box-shadow: var(--sombra-suave); }
+.cert__ico { width: 60px; height: 60px; border-radius: 50%; background: var(--tinta-vermelha); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+.cert__ico img { width: 30px; height: 30px; }
+.cert__ico .ico { width: 28px; height: 28px; stroke: var(--vermelho-600); }
+.cert h4 { font-size: 17px; line-height: 24px; font-weight: 500; color: var(--grafite-900); }
+.cert p { font-size: 14px; line-height: 20px; color: var(--cinza-500); }
+.cert__nivel { margin-top: auto; padding: 6px 12px; border-radius: var(--raio-etiqueta); background: var(--grafite-900); color: var(--branco); font-size: 11px; line-height: 14px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.cert p + .cert__nivel { margin-top: 8px; }
+
+/* vídeo institucional */
+.video-home { max-width: 960px; margin: 8px auto 0; }
+
+/* formulário "Garanta sua unidade" */
+.garanta { display: grid; gap: 20px; padding: 28px 24px; background: var(--cinza-100); border: 1px solid var(--borda); border-radius: var(--raio-bloco); }
+@media (min-width: 768px) { .garanta { padding: 32px 36px; } }
+.garanta__texto p { margin-top: 6px; color: var(--cinza-500); }
+.garanta__corpo { display: grid; gap: 12px; }
+.garanta__linha { display: grid; gap: 12px; }
+@media (min-width: 768px) { .garanta__linha { grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: start; } }
+.garanta .campo input { min-height: 52px; background: var(--branco); border-radius: var(--raio-controle); }
+.garanta__btn { min-height: 52px; padding: 0 26px; gap: 10px; }
+.garanta__btn .ico { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.garanta__check .check { font-size: 13px; line-height: 19px; color: var(--cinza-500); }
+.garanta__check a { color: var(--vermelho-600); text-decoration: underline; text-underline-offset: 2px; }
+.garanta .form__msg { margin-top: 0; }
+
+/* rodapé: títulos sem travessão, 4 colunas iguais, só o escritório */
+.rodape__titulo::before { content: none; }
+.rodape__titulo a { color: inherit; }
+.rodape__titulo a:hover { color: var(--branco); }
+@media (min-width: 1280px) { .rodape__faixa2 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .rodape__faixa3 { grid-template-columns: 1fr; } }
