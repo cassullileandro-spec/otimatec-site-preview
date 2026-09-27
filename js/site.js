@@ -94,6 +94,8 @@
       if (id === 'modal-visita') prepararVisita(b.getAttribute('data-emp'));
       if (id === 'modal-email' && b.getAttribute('data-assunto')) { var s = $('#modal-email select[name="assunto"]'); if (s) s.value = b.getAttribute('data-assunto'); }
       if (id === 'modal-planta') prepararPlanta(b);
+      if (b.getAttribute('data-opcao')) { var so = $('#' + id + ' select[name="assunto"]'); if (so) so.value = b.getAttribute('data-opcao'); }
+      if (drawer && drawer.classList.contains('aberto')) fecharDrawer();
       abrirModal(id, b);
     });
   });
@@ -361,7 +363,7 @@
     var abas = $$('.aba', grupo), paineis = $$('.planta', grupo.parentElement);
     abas.forEach(function (a, i) {
       on(a, 'click', function () { abas.forEach(function (x, k) { x.setAttribute('aria-selected', k === i ? 'true' : 'false'); x.tabIndex = k === i ? 0 : -1; }); paineis.forEach(function (p, k) { p.classList.toggle('ativa', k === i); }); });
-      on(a, 'keydown', function (e) { var k = i; if (e.key === 'ArrowRight') k = (i + 1) % abas.length; else if (e.key === 'ArrowLeft') k = (i - 1 + abas.length) % abas.length; else return; abas[k].focus(); abas[k].click(); });
+      on(a, 'keydown', function (e) { var k = i; if (e.key === 'ArrowRight' || e.key === 'ArrowDown') k = (i + 1) % abas.length; else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') k = (i - 1 + abas.length) % abas.length; else return; e.preventDefault(); abas[k].focus(); abas[k].click(); });
     });
   });
 
@@ -380,6 +382,11 @@
   function abrirLightbox(lista, i) { if (!lightbox) return; lbItens = lista; lbIdx = i; renderLb(); lightbox.classList.add('aberto'); lightbox.removeAttribute('aria-hidden'); body.style.overflow = 'hidden'; $('.modal__fechar', lightbox).focus(); }
   function fecharLightbox() { lightbox.classList.remove('aberto'); lightbox.setAttribute('aria-hidden', 'true'); body.style.overflow = ''; }
   function renderLb() { var it = lbItens[lbIdx]; if (!it) return; var img = $('img', lightbox); img.src = it.src; img.alt = it.alt; $('figcaption', lightbox).textContent = it.legenda || ''; }
+  // cards dos empreendimentos vendidos: "Acessar galeria" abre as perspectivas do book no lightbox
+  $$('[data-abre-galeria]').forEach(function (b) {
+    var abre = function (e) { if (e) e.preventDefault(); var card = b.closest('.card-emp'); if (!card) return; var lista = $$('.card-emp__fotos [data-lb-src]', card).map(function (x) { return { src: x.getAttribute('data-lb-src'), alt: x.getAttribute('data-lb-alt') || '', legenda: x.getAttribute('data-lb-legenda') || '' }; }); if (lista.length) abrirLightbox(lista, 0); };
+    on(b, 'click', abre); on(b, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') abre(e); });
+  });
   if (lightbox) {
     on($('.modal__fechar', lightbox), 'click', fecharLightbox); on($('.lightbox__overlay', lightbox), 'click', fecharLightbox);
     on($('.seta--prox', lightbox), 'click', function () { lbIdx = (lbIdx + 1) % lbItens.length; renderLb(); }); on($('.seta--ant', lightbox), 'click', function () { lbIdx = (lbIdx - 1 + lbItens.length) % lbItens.length; renderLb(); });
@@ -400,7 +407,8 @@
     var links = $$('ul a', abasAnc), secs = links.map(function (a) { var h = a.getAttribute('href') || ''; return h.charAt(0) === '#' ? $(h) : null; });
     function ativa() { var y = (w.scrollY || 0) + 200, atual = 0; secs.forEach(function (s, i) { if (s && s.offsetTop <= y) atual = i; }); links.forEach(function (a, i) { a.classList.toggle('ativo', i === atual); }); }
     on(w, 'scroll', ativa, { passive: true }); ativa();
-    var topoCard = $('.emp-topo .card-lateral'), formFinal = $('#garanta');
+    // o botão "Agendar visita" da barra de abas aparece quando os botões do topo saem da tela
+    var topoCard = $('.emp-info__acoes') || $('.emp-topo .card-lateral'), formFinal = $('#garanta');
     if (topoCard && 'IntersectionObserver' in w) {
       var topoVis = true, formVis = false;
       new IntersectionObserver(function (es) { topoVis = es[0].isIntersecting || es[0].boundingClientRect.top > 0; ajusta(); }).observe(topoCard);
