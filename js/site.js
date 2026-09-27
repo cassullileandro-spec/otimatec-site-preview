@@ -169,6 +169,12 @@
     irEtapa(visita.pulaEtapa1 ? 2 : 1);
     $$('.modal__etapa', mv).forEach(function (e) { e.classList.remove('modal__etapa--fim'); });
   }
+  // Contato: escolha do empreendimento no próprio card; "Continuar" abre o agendamento já no passo do dia
+  $$('[data-agendar-inline]').forEach(function (card) {
+    var ops = $$('.opcao', card), aviso = $('.contato-agendar__aviso', card), escolhido = null;
+    ops.forEach(function (o) { on(o, 'click', function () { ops.forEach(function (x) { x.setAttribute('aria-pressed', x === o ? 'true' : 'false'); }); escolhido = o.getAttribute('data-emp'); if (aviso) aviso.hidden = true; }); });
+    on($('.contato-agendar__btn', card), 'click', function (e) { if (!escolhido) { if (aviso) aviso.hidden = false; return; } prepararVisita(escolhido); abrirModal('modal-visita', e.currentTarget); });
+  });
   function irEtapa(n) {
     visita.etapa = n;
     $$('.modal__etapa', mv).forEach(function (e) { e.classList.toggle('ativa', e.getAttribute('data-etapa') === String(n)); });
@@ -351,8 +357,11 @@
   /* ---------- vídeo lite (YouTube) ---------- */
   $$('.video-lite').forEach(function (v) {
     var id = v.getAttribute('data-yt'); if (!id) return;
-    var img = $('img', v); if (img && !img.getAttribute('src')) { img.src = 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; img.loading = 'lazy'; }
+    // capa em alta (1280 px); se o vídeo não tiver, cai para a de 480 px
+    var img = $('img', v); if (img && !img.getAttribute('src')) { img.loading = 'lazy'; img.onerror = function () { img.onerror = null; img.src = 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; }; img.src = 'https://i.ytimg.com/vi/' + id + '/maxresdefault.jpg'; }
     on($('.video-lite__play', v), 'click', function () {
+      // vídeo com incorporação desativada no YouTube: abre no YouTube em vez de mostrar "vídeo indisponível"
+      if (v.hasAttribute('data-externo')) { evento('play_video', { video: id, pagina: CFG.pagina, externo: true }); return; } // o próprio link abre o YouTube
       var f = d.createElement('iframe'); f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0'; f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'; f.allowFullscreen = true; f.title = v.getAttribute('data-titulo') || 'Vídeo';
       v.innerHTML = ''; v.appendChild(f); evento('play_video', { video: id, pagina: CFG.pagina });
     });
@@ -472,6 +481,7 @@
   var buscaHome = $('#busca-home');
   if (buscaHome) {
     on($('[name="cidade"]', buscaHome), 'change', function () { var c = this.value, b = $('[name="bairro"]', buscaHome); $$('option', b).forEach(function (o) { o.hidden = !!(o.getAttribute('data-cidade') && c && o.getAttribute('data-cidade') !== c); }); var sel = b.options[b.selectedIndex]; if (sel && sel.hidden) b.value = ''; });
+    on($('.busca__limpar', buscaHome), 'click', function () { buscaHome.reset(); $$('[name="bairro"] option', buscaHome).forEach(function (o) { o.hidden = false; }); marcaPreenchidos(buscaHome); });
     on(buscaHome, 'submit', function () { var f = {}; new FormData(buscaHome).forEach(function (v, k) { f[k] = v; }); evento('filtro_busca', f); });
   }
 

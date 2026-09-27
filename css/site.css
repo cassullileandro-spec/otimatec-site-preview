@@ -2490,3 +2490,99 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .hero-escuro__img img { object-position: 70% 0%; }
 @media (max-width: 1023px) { .hero-escuro__img { top: calc(var(--header-gap) + var(--header-h) + 6px); } }
 @media (max-width: 767px) { .hero-escuro__img::after { background: linear-gradient(180deg, rgba(14,14,16,.72) 0%, rgba(14,14,16,.62) 45%, rgba(14,14,16,.88) 100%); } }
+
+/* =====================================================================
+   TERCEIRO DOCUMENTO DO CLIENTE (27/09/2026)
+   ===================================================================== */
+
+/* banner do Harmonia: dois blocos (apartamento e cobertura), um item por linha */
+.banner__blocos { display: flex; flex-wrap: wrap; gap: 14px 40px; margin-top: 16px; }
+.banner__bloco { display: flex; flex-direction: column; gap: 2px; padding-left: 14px; border-left: 2px solid var(--vermelho-600); color: var(--branco); font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.banner__bloco span:first-child { font-size: 22px; line-height: 28px; letter-spacing: 0; text-transform: none; }
+@media (max-width: 767px) { .banner__blocos { gap: 10px 24px; } .banner__bloco { font-size: 12px; line-height: 18px; } .banner__bloco span:first-child { font-size: 17px; line-height: 22px; } }
+
+/* textos de abertura no mesmo tamanho dos parágrafos */
+.historia p, .qualidade > p { font-size: 16px; line-height: 26px; color: var(--grafite-900); }
+.qualidade > p { margin: 8px 0 16px; max-width: none; }
+
+/* entrada clara com desenho de prédios (Imóveis e Sobre) */
+.hero-claro { position: relative; overflow: hidden; background: var(--cinza-50); min-height: 420px; display: flex; align-items: flex-start; }
+.hero-claro__in { position: relative; z-index: 1; padding-top: calc(var(--header-gap) + var(--header-h) + 56px); padding-bottom: 200px; }
+.hero-claro .display { color: var(--grafite-900); font-size: clamp(30px, 3.6vw, 48px); line-height: 1.1; max-width: 18ch; }
+.hero-claro .sub { margin-top: 14px; font-size: 17px; line-height: 27px; color: var(--cinza-500); max-width: 52ch; }
+.hero-claro .divisor { max-width: 420px; }
+.hero-claro__desenho { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: max(1200px, 100%); height: auto; pointer-events: none; }
+@media (min-width: 1024px) { .hero-claro { min-height: 520px; } .hero-claro__in { padding-bottom: 120px; } .hero-claro__desenho { left: auto; right: -2%; transform: none; width: 60%; } }
+@media (max-width: 767px) { .hero-claro__in { padding-top: calc(var(--header-gap) + var(--header-h) + 36px); padding-bottom: 150px; } .hero-claro__desenho { width: 900px; } }
+.hero-claro + .faixa-titulo { border-top: 1px solid var(--borda); }
+
+/* vídeo institucional menor */
+.video-home--menor { max-width: 760px; }
+
+/* página do empreendimento: foto real ao lado da apresentação (Harmonia) */
+.emp-apres--foto { max-width: none; display: grid; gap: 32px; align-items: center; }
+@media (min-width: 1024px) { .emp-apres--foto { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; } }
+.emp-apres__foto > div { position: relative; border-radius: var(--raio-midia); overflow: hidden; aspect-ratio: 4 / 5; cursor: zoom-in; }
+.emp-apres__foto picture, .emp-apres__foto img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0; }
+
+/* Sobre: 4 números em linha */
+.cards-num--4 { margin-top: 16px; }
+@media (min-width: 1024px) { .cards-num--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Contato: agendamento com escolha do empreendimento no card */
+.contato-agendar .opcoes--emp { display: grid; gap: 8px; margin-top: 4px; }
+.contato-agendar .opcao { background: var(--branco); }
+.contato-agendar__btn { align-self: flex-start; margin-top: 8px; }
+.contato-agendar__aviso { margin: 0; }
+/* Sobre: a equipe fica na parte de baixo da foto (sem rostos sob o cabeçalho) */
+.pagina-sobre .hero-escuro__img img { object-position: 60% 74%; }
+
+/* entradas das páginas internas: mesma altura em todas (27/09/2026)
+   inclui a entrada clara com desenho (Imóveis); o texto se ajusta dentro da altura fixa */
+:root { --entrada-h: 440px; }
+@media (max-width: 767px) { :root { --entrada-h: 380px; } }
+.hero-escuro, .hero-claro { height: var(--entrada-h); min-height: 0; }
+.hero-claro { align-items: flex-start; }
+.hero-claro__in { padding-bottom: 0; }
+@media (min-width: 1024px) { .hero-claro__in { padding-top: calc(var(--header-gap) + var(--header-h) + 48px); } .hero-claro__desenho { width: 54%; } }
+@media (max-width: 767px) {
+  .hero-escuro__in { padding-bottom: 28px; }
+  .hero-escuro .display, .hero-claro .display { font-size: clamp(26px, 7.4vw, 30px); }
+  .hero-escuro .sub { font-size: 15px; line-height: 22px; }
+  .hero-claro__desenho { width: 640px; }
+}
+
+/* página do empreendimento: fotos do topo sem raio, coladas e maiores; o cabeçalho flutua por cima (27/09/2026) */
+.emp-galeria, .emp-galeria { padding-top: 0; }
+@media (min-width: 1024px) { .emp-galeria { padding-top: 0; } }
+.emp-galeria__trilho { gap: 3px; padding: 0; }
+.emp-galeria__item { border-radius: 0; height: clamp(420px, 74vh, 820px); }
+.emp-galeria__item::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 140px; background: linear-gradient(180deg, rgba(14,14,16,.45), rgba(14,14,16,0)); pointer-events: none; z-index: 1; }
+.emp-galeria__legenda { z-index: 2; left: 16px; bottom: 16px; }
+@media (max-width: 767px) { .emp-galeria__item { height: 440px; max-width: 88vw; } }
+
+/* setas sobre foto com efeito de vidro (galeria dos empreendimentos, banner, lightbox) */
+.seta--claro {
+  background: rgba(18,18,20,.38);
+  -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255,255,255,.55);
+  color: var(--branco);
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.seta--claro svg { stroke-width: 2.4; }
+.seta--claro:hover { background: rgba(255,255,255,.92); border-color: var(--branco); color: var(--grafite-900); }
+.seta--claro:focus-visible { outline: 2px solid var(--branco); outline-offset: 3px; }
+/* setas da galeria do empreendimento nas laterais, no meio da foto (não colidem com as legendas) */
+.emp-galeria__setas { top: 50%; bottom: auto; left: 20px; right: 20px; transform: translateY(-50%); justify-content: space-between; pointer-events: none; z-index: 3; }
+.emp-galeria__setas .seta { pointer-events: auto; width: 52px; height: 52px; }
+@media (min-width: 1024px) { .emp-galeria__setas { left: 32px; right: 32px; } }
+
+/* busca da home: "Limpar filtros" abaixo do Pesquisar, no mesmo padrão da página Imóveis */
+.busca__acao { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.busca__acao .busca__btn { grid-column: auto; grid-row: auto; margin: 6px 0 0; width: 100%; }
+.limpar { font-size: 13px; font-weight: 500; text-align: center; text-decoration: underline; text-underline-offset: 3px; color: var(--cinza-500); background: none; border: 0; cursor: pointer; min-height: 32px; padding: 4px 8px; }
+.limpar:hover { color: var(--vermelho-600); }
+@media (min-width: 1280px) {
+  .busca__acao { grid-column: 4; grid-row: 1 / span 2; justify-content: center; align-self: center; }
+  .busca__acao .busca__btn { margin: 0; }
+}
