@@ -2586,3 +2586,11 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
   .busca__acao { grid-column: 4; grid-row: 1 / span 2; justify-content: center; align-self: center; }
   .busca__acao .busca__btn { margin: 0; }
 }
+
+/* plantas das áreas comuns (Tucuruvi): grupo próprio na lista; planta larga ocupa a linha toda */
+.plantas2__grupo { margin: 18px 0 4px; padding: 0 6px; font-size: 11px; line-height: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--cinza-500); }
+@media (min-width: 1024px) { .plantas2 .planta--comum.ativa { grid-template-columns: 1fr; } }
+.planta--comum .planta__img { background: #FBF5EC; }
+.card-emp__end { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 19px; color: var(--cinza-500); }
+.card-emp__end .ico { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+.planta--comum .planta__img { aspect-ratio: 1890 / 948; overflow: hidden; }
