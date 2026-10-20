@@ -100,6 +100,24 @@
     });
   });
 
+  if (w.location.hash === '#corretor-parceiro') abrirModal('modal-corretor');
+
+  /* ---------- referências do mapa ilustrado ---------- */
+  $$('[data-mapa-regiao]').forEach(function (mapa) {
+    var pontos = JSON.parse($('[data-pontos-regiao]', mapa).textContent);
+    var botoes = $$('[data-ponto]', mapa), detalhe = $('.mapa-regiao__detalhe', mapa);
+    botoes.forEach(function (botao) {
+      on(botao, 'click', function () {
+        var numero = botao.getAttribute('data-ponto'), ponto = pontos[Number(numero) - 1];
+        botoes.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-ponto') === numero ? 'true' : 'false'); });
+        $('.mapa-regiao__nome', detalhe).textContent = ponto.nome;
+        $('.mapa-regiao__descricao', detalhe).textContent = ponto.descricao;
+        $('.mapa-regiao__rota', detalhe).href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ponto.busca);
+        evento('selecionar_referencia_mapa', { empreendimento: CFG.pagina, ponto: ponto.nome });
+      });
+    });
+  });
+
   /* ---------- formulários: máscara, validação, envio ---------- */
   function mascaraTel(v) {
     v = v.replace(/\D/g, '').slice(0, 11);
