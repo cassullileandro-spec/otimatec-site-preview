@@ -518,7 +518,7 @@
   var ck = $('#cookies');
   function consent() { try { return JSON.parse(localStorage.getItem('otimatec_cookies') || 'null'); } catch (e) { return null; } }
   function salvaConsent(o) { try { localStorage.setItem('otimatec_cookies', JSON.stringify(o)); } catch (e) {} carregaTags(o); if (ck) ck.classList.remove('aberto'); }
-  function hostAnalytics() { return (CFG.analyticsHosts || []).indexOf(w.location.hostname) !== -1; }
+  function hostAnalytics() { return CFG.environment === 'production' && (CFG.analyticsHosts || []).indexOf(w.location.hostname) !== -1; }
   function urlSemDados(url) { try { var u = new URL(url); return u.origin + u.pathname; } catch (e) { return ''; } }
   function carregaTags(o) {
     if (!hostAnalytics()) return;
