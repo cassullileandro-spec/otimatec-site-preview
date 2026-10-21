@@ -2367,7 +2367,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .emp-info__acoes .ico { width: 18px; height: 18px; }
 .emp-info__legal { font-size: 11px; line-height: 16px; color: var(--cinza-500); margin-top: 8px; }
 
-.emp-apres { max-width: 860px; margin-bottom: 40px; }
+.emp-apres { max-width: 860px; }
 .emp-apres__lead { font-size: clamp(22px, 2.4vw, 28px); line-height: 1.35; font-weight: 500; color: var(--grafite-900); }
 .emp-apres__lista { display: grid; gap: 10px; margin-top: 24px; }
 @media (min-width: 768px) { .emp-apres__lista { grid-template-columns: 1fr 1fr; gap: 12px 32px; } }
@@ -2382,7 +2382,8 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .emp-his p { margin-top: 8px; max-width: 70ch; color: var(--cinza-500); }
 
 .emp-bairro { display: grid; gap: 40px; align-items: start; }
-@media (min-width: 1024px) { .emp-bairro { grid-template-columns: 1.3fr 1fr; gap: 64px; } }
+@media (min-width: 1024px) { .emp-bairro { grid-template-columns: 1fr 1.3fr; gap: 64px; } }
+.emp-bairro__cabecalho .h2 { letter-spacing: 0; }
 .emp-bairro__texto p + p { margin-top: 14px; }
 .emp-bairro__texto p { font-size: 16px; line-height: 26px; }
 .emp-bairro__fecho { font-weight: 500; color: var(--grafite-900); font-size: 17px !important; }
@@ -2441,7 +2442,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 @media (min-width: 1024px) { .emp-mais { grid-template-columns: 1.4fr 1fr; gap: 64px; } }
 .emp-mais__form > p { margin: 4px 0 20px; color: var(--cinza-500); }
 .emp-mais__ctas { display: grid; gap: 16px; }
-.emp-mais__cta { background: var(--cinza-100); border: 1px solid var(--borda); border-radius: var(--raio-card); padding: 24px; display: grid; gap: 12px; justify-items: start; }
+.emp-mais__cta { border-top: 1px solid var(--borda); padding: 24px 0; display: grid; gap: 12px; justify-items: start; }
 .emp-mais__cta p { font-size: 17px; line-height: 25px; font-weight: 500; color: var(--grafite-900); }
 .emp-mais__ico { width: 44px; height: 44px; border-radius: var(--raio-icone); background: var(--branco); display: inline-flex; align-items: center; justify-content: center; }
 .emp-mais__ico .ico { width: 22px; height: 22px; stroke: var(--vermelho-600); }
@@ -2602,14 +2603,15 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 /* plantas das áreas comuns (Tucuruvi): grupo próprio na lista; planta larga ocupa a linha toda */
 .plantas2__grupo { margin: 18px 0 4px; padding: 0 6px; font-size: 11px; line-height: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--cinza-500); }
 @media (min-width: 1024px) { .plantas2 .planta--comum.ativa { grid-template-columns: 1fr; } }
-.planta--comum .planta__img { background: #FBF5EC; }
+.planta--comum .planta__img { background: var(--branco); }
 .card-emp__end { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 19px; color: var(--cinza-500); }
 .card-emp__end .ico { width: 16px; height: 16px; flex: none; margin-top: 2px; }
-.planta--comum .planta__img { aspect-ratio: 1890 / 948; overflow: hidden; }
+.planta--comum .planta__img { aspect-ratio: var(--planta-proporcao, 2); overflow: hidden; }
 
 /* Revisao de outubro: apresentacao clara e card com foto de obra. */
 .secao--confianca { background: #EEF2F0; color: var(--grafite-900); }
-.qualidade > .qualidade__compromisso { max-width: none; }
+.qualidade > .qualidade__compromisso { max-width: 76ch; margin: 12px 0 0; font-size: 18px; line-height: 28px; }
+.qualidade__compromisso strong { font-weight: 700; }
 #mc-titulo { padding-right: 32px; }
 #modal-corretor .modal__card { display: flex; flex-direction: column; overflow: hidden; max-height: calc(100dvh - 32px); }
 #modal-corretor .modal__card > h2, #modal-corretor .modal__card > p { flex-shrink: 0; }
