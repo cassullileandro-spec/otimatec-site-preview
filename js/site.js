@@ -97,9 +97,7 @@
     on(b, 'click', function (e) {
       e.preventDefault();
       var id = b.getAttribute('data-modal');
-      if (id === 'modal-visita') prepararVisita(b.getAttribute('data-emp'));
       if (id === 'modal-email' && b.getAttribute('data-assunto')) { var s = $('#modal-email select[name="assunto"]'); if (s) s.value = b.getAttribute('data-assunto'); }
-      if (id === 'modal-planta') prepararPlanta(b);
       if (b.getAttribute('data-opcao')) { var so = $('#' + id + ' select[name="assunto"]'); if (so) so.value = b.getAttribute('data-opcao'); }
       if (drawer && drawer.classList.contains('aberto')) fecharDrawer();
       abrirModal(id, b);
@@ -159,6 +157,25 @@
   });
   function dadosForm(f) { var o = {}; new FormData(f).forEach(function (v, k) { o[k] = v; }); o.pagina = CFG.pagina; o.url = w.location.href; o.formulario = f.getAttribute('data-lead'); o.data = new Date().toISOString(); return o; }
   function enviarLead(f, cb) {
+    if (CFG.formChannel === 'whatsapp') {
+      var nomes = { nome: 'Nome', email: 'E-mail', telefone: 'Telefone', whatsapp: 'WhatsApp', celular: 'Celular', creci: 'CRECI', imobiliaria: 'Imobiliária', interesse: 'Interesse', empreendimento: 'Empreendimento', assunto: 'Assunto', mensagem: 'Mensagem' };
+      var linhas = ['Olá! Vim pelo site da Otimatec.'];
+      new FormData(f).forEach(function (valor, chave) {
+        if (!nomes[chave] || !String(valor).trim()) return;
+        if (chave === 'empreendimento' && (CFG.plantoes || {})[valor]) valor = CFG.plantoes[valor].nome;
+        linhas.push(nomes[chave] + ': ' + valor);
+      });
+      var continuar = $('.form__continuar', f) || d.createElement('a');
+      continuar.className = 'btn btn--whatsapp form__continuar'; continuar.textContent = 'Continuar no WhatsApp';
+      continuar.href = waUrl(linhas.join('\n')); continuar.target = '_blank'; continuar.rel = 'noopener noreferrer';
+      if (!continuar.parentNode) f.appendChild(continuar);
+      var pronto = $('.form__msg', f) || d.createElement('p'); pronto.className = 'form__msg'; pronto.setAttribute('role', 'status');
+      pronto.textContent = 'Mensagem pronta no WhatsApp. O contato só é concluído após o envio.';
+      if (!pronto.parentNode) f.appendChild(pronto);
+      evento('abrir_contato_formulario', { formulario: f.getAttribute('data-lead'), pagina: CFG.pagina });
+      w.open(continuar.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
     var btn = $('button[type="submit"]', f), txt = btn ? btn.innerHTML : '';
     if (btn) { btn.disabled = true; btn.textContent = CFG.txt.carregando; }
     var dados = dadosForm(f);
@@ -183,113 +200,6 @@
     }
     post(dados).then(function (dd) { return fetch(CFG.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(dd) }); })
       .then(function (r) { fim(r.ok); }).catch(function () { fim(false); });
-  }
-
-  /* ---------- modal agendar visita ---------- */
-  var mv = $('#modal-visita'), visita = { emp: null, dia: null, periodo: null, etapa: 1, pulaEtapa1: false };
-  var FERIADOS = ['01-01', '04-21', '05-01', '09-07', '10-12', '11-02', '11-15', '11-20', '12-25'];
-  var DIAS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'], MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-  function prepararVisita(slug) {
-    if (!mv) return;
-    visita = { emp: null, dia: null, periodo: null, etapa: 1, pulaEtapa1: false };
-    $$('.opcao', mv).forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
-    if (slug) { var o = $('.opcao[data-emp="' + slug + '"]', mv); if (o) { o.setAttribute('aria-pressed', 'true'); visita.emp = slug; visita.pulaEtapa1 = true; } }
-    montarCalendario();
-    irEtapa(visita.pulaEtapa1 ? 2 : 1);
-    $$('.modal__etapa', mv).forEach(function (e) { e.classList.remove('modal__etapa--fim'); });
-  }
-  // Contato: escolha do empreendimento no próprio card; "Continuar" abre o agendamento já no passo do dia
-  $$('[data-agendar-inline]').forEach(function (card) {
-    var ops = $$('.opcao', card), aviso = $('.contato-agendar__aviso', card), escolhido = null;
-    ops.forEach(function (o) { on(o, 'click', function () { ops.forEach(function (x) { x.setAttribute('aria-pressed', x === o ? 'true' : 'false'); }); escolhido = o.getAttribute('data-emp'); if (aviso) aviso.hidden = true; }); });
-    on($('.contato-agendar__btn', card), 'click', function (e) { if (!escolhido) { if (aviso) aviso.hidden = false; return; } prepararVisita(escolhido); abrirModal('modal-visita', e.currentTarget); });
-  });
-  function irEtapa(n) {
-    visita.etapa = n;
-    $$('.modal__etapa', mv).forEach(function (e) { e.classList.toggle('ativa', e.getAttribute('data-etapa') === String(n)); });
-    var barra = $('.modal__progresso span', mv); if (barra) barra.style.width = ({ 1: '33%', 2: '66%', 3: '100%', 4: '100%', 5: '100%' })[n];
-    var f = $('.modal__etapa.ativa input, .modal__etapa.ativa button.opcao, .modal__etapa.ativa .dia', mv); if (f) setTimeout(function () { f.focus(); }, 30);
-  }
-  function montarCalendario() {
-    var cal = $('.calendario', mv); if (!cal) return; cal.innerHTML = '';
-    var hoje = new Date(), n = 0, dt = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 1), mesAtual = -1;
-    while (n < 14) {
-      var mmdd = ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2);
-      var feriado = FERIADOS.indexOf(mmdd) >= 0, domingo = dt.getDay() === 0;
-      if (!feriado && !domingo) {
-        if (dt.getMonth() !== mesAtual) { mesAtual = dt.getMonth(); var m = d.createElement('div'); m.className = 'calendario__mes'; m.textContent = MESES[mesAtual] + ' ' + dt.getFullYear(); cal.appendChild(m); }
-        var b = d.createElement('button'); b.type = 'button'; b.className = 'dia'; b.setAttribute('aria-pressed', 'false');
-        b.setAttribute('data-data', dt.toISOString().slice(0, 10)); b.setAttribute('data-dow', dt.getDay());
-        b.innerHTML = '<small>' + DIAS[dt.getDay()] + '</small><b>' + dt.getDate() + '</b>';
-        on(b, 'click', function (ev) { var el = ev.currentTarget; $$('.dia', cal).forEach(function (x) { x.setAttribute('aria-pressed', 'false'); }); el.setAttribute('aria-pressed', 'true'); visita.dia = el.getAttribute('data-data'); ajustaPeriodos(+el.getAttribute('data-dow')); });
-        cal.appendChild(b); n++;
-      }
-      dt.setDate(dt.getDate() + 1);
-    }
-  }
-  function ajustaPeriodos(dow) {
-    $$('.periodos .opcao', mv).forEach(function (p) {
-      var sab = /s[aá]bado/i.test(p.textContent);
-      p.disabled = dow === 6 ? !sab : sab;
-      if (p.disabled) p.setAttribute('aria-pressed', 'false');
-    });
-    if (visita.periodo) { var atual = $('.periodos .opcao[aria-pressed="true"]', mv); if (!atual) visita.periodo = null; }
-  }
-  if (mv) {
-    $$('.opcoes--emp .opcao', mv).forEach(function (o) { on(o, 'click', function () { $$('.opcoes--emp .opcao', mv).forEach(function (x) { x.setAttribute('aria-pressed', 'false'); }); o.setAttribute('aria-pressed', 'true'); visita.emp = o.getAttribute('data-emp'); }); });
-    $$('.periodos .opcao', mv).forEach(function (o) { on(o, 'click', function () { if (o.disabled) return; $$('.periodos .opcao', mv).forEach(function (x) { x.setAttribute('aria-pressed', 'false'); }); o.setAttribute('aria-pressed', 'true'); visita.periodo = o.textContent.trim(); }); });
-    $$('[data-etapa-ir]', mv).forEach(function (b) {
-      on(b, 'click', function () {
-        var alvo = +b.getAttribute('data-etapa-ir');
-        if (alvo > visita.etapa) {
-          if (visita.etapa === 1 && !visita.emp) { var av = $('.modal__aviso', $('.modal__etapa[data-etapa="1"]', mv)); if (av) av.hidden = false; return; }
-          if (visita.etapa === 2 && (!visita.dia || !visita.periodo)) { var av2 = $('.modal__aviso', $('.modal__etapa[data-etapa="2"]', mv)); if (av2) av2.hidden = false; return; }
-        }
-        if (alvo === 1 && visita.pulaEtapa1) alvo = 2;
-        irEtapa(alvo);
-      });
-    });
-    var fv = $('form', mv);
-    on(fv, 'submit', function (e) {
-      e.preventDefault();
-      if (!validaForm(fv)) return;
-      $('input[name="empreendimento"]', fv).value = visita.emp || ''; $('input[name="dia"]', fv).value = visita.dia || ''; $('input[name="periodo"]', fv).value = visita.periodo || '';
-      enviarLead(fv, function (ok) {
-        if (ok) {
-          evento('agendar_visita', { empreendimento: visita.emp, dia: visita.dia, periodo: visita.periodo });
-          var emp = (CFG.plantoes || {})[visita.emp];
-          var end = $('.visita__endereco', mv); if (end) { end.hidden = !emp; if (emp) end.textContent = CFG.txt.enderecoDecorado + ' ' + emp.plantao; }
-          var maps = $('.visita__maps', mv); if (maps) { maps.hidden = !emp; if (emp) maps.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(emp.plantao); }
-          var ics = $('.visita__ics', mv); if (ics) ics.href = gerarIcs(emp);
-          irEtapa(4);
-        } else { irEtapa(5); }
-      });
-    });
-    on($('.visita__tentar', mv), 'click', function () { irEtapa(3); });
-  }
-  function gerarIcs(emp) {
-    var dia = (visita.dia || '').replace(/-/g, ''), hora = /tarde/i.test(visita.periodo || '') ? '130000' : '090000';
-    var fim = /tarde/i.test(visita.periodo || '') ? '170000' : (/s[aá]bado/i.test(visita.periodo || '') ? '130000' : '120000');
-    var txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Otimatec//Visita//PT', 'BEGIN:VEVENT', 'UID:' + Date.now() + '@otimatec.com.br', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
-      'DTSTART:' + dia + 'T' + hora, 'DTEND:' + dia + 'T' + fim, 'SUMMARY:Visita ao decorado ' + (emp ? emp.nome : 'Otimatec'), 'LOCATION:' + (emp ? emp.plantao : ''), 'DESCRIPTION:Visita agendada pelo site da Otimatec. ' + (visita.periodo || ''), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-    return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(txt);
-  }
-
-  /* ---------- modal planta (lead antes do PDF) ---------- */
-  var mp = $('#modal-planta');
-  function prepararPlanta(b) { if (!mp) return; mp.setAttribute('data-pdf', b.getAttribute('data-pdf') || ''); mp.setAttribute('data-planta', b.getAttribute('data-planta') || ''); var t = $('.planta-nome', mp); if (t) t.textContent = b.getAttribute('data-planta') || ''; $$('.modal__etapa', mp).forEach(function (e, i) { e.classList.toggle('ativa', i === 0); }); }
-  if (mp) {
-    var fp = $('form', mp);
-    on(fp, 'submit', function (e) {
-      e.preventDefault(); if (!validaForm(fp)) return;
-      $('input[name="planta"]', fp).value = mp.getAttribute('data-planta');
-      enviarLead(fp, function (ok) {
-        if (!ok) { var m = $('.form__msg', fp); if (m) { m.hidden = false; m.textContent = CFG.txt.erroEnvio; } return; }
-        evento('download_planta', { planta: mp.getAttribute('data-planta'), pagina: CFG.pagina });
-        var link = $('.planta__baixar', mp); if (link) link.href = mp.getAttribute('data-pdf');
-        $$('.modal__etapa', mp).forEach(function (e, i) { e.classList.toggle('ativa', i === 1); });
-      });
-    });
   }
 
   /* ---------- banner rotativo ---------- */
@@ -361,7 +271,7 @@
       if (r.bottom < -200 || r.top > vh + 200) return;
       var p = (vh - r.top) / (vh + r.height); // 0 ao entrar, 1 ao sair
       fileiras.forEach(function (f) {
-        var s = +f.getAttribute('data-sentido'), metade = f.scrollWidth / 2, alcance = Math.min(metade - w.innerWidth * .5, w.innerWidth * .45);
+        var s = +f.getAttribute('data-sentido'), metade = f.scrollWidth / 2, alcance = Math.max(0, Math.min(metade - w.innerWidth * .5, w.innerWidth * .45));
         var x = s < 0 ? -alcance * p : -alcance * (1 - p);
         f.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,0)';
       });
@@ -445,7 +355,7 @@
     var links = $$('ul a', abasAnc), secs = links.map(function (a) { var h = a.getAttribute('href') || ''; return h.charAt(0) === '#' ? $(h) : null; });
     function ativa() { var y = (w.scrollY || 0) + 200, atual = 0; secs.forEach(function (s, i) { if (s && s.offsetTop <= y) atual = i; }); links.forEach(function (a, i) { a.classList.toggle('ativo', i === atual); }); }
     on(w, 'scroll', ativa, { passive: true }); ativa();
-    // o botão "Agendar visita" da barra de abas aparece quando os botões do topo saem da tela
+    // A chamada de contato acompanha a visibilidade das acoes do topo.
     var topoCard = $('.emp-info__acoes') || $('.emp-topo .card-lateral'), formFinal = $('#garanta');
     if (topoCard && 'IntersectionObserver' in w) {
       var topoVis = true, formVis = false;
@@ -460,6 +370,9 @@
   if (lista) {
     var fForm = $('#form-filtros'), cards = $$('[data-card]', lista), cont = $('#contagem'), vazio = $('#vazio'), ordem = $('#ordenar');
     var q = new URLSearchParams(w.location.search);
+    var bairroAntigo = q.get('bairro'), aliases = { 'Vila São Ricardo': 'Picanço', 'Vila Gustavo': 'Tucuruvi', 'Vila das Palmeiras': 'Vila Augusta' };
+    if (aliases[bairroAntigo]) q.set('bairro', aliases[bairroAntigo]);
+    if (q.get('status') === '100-vendido' || q.get('status') === 'entregue') { var destinoEntregues = $('[data-entregues]'); if (destinoEntregues) w.location.replace(destinoEntregues.href); }
     ['cidade', 'bairro', 'tamanho', 'dorms', 'vagas', 'status', 'tag'].forEach(function (k) { var s = $('[name="' + k + '"]', fForm); if (s && q.get(k)) s.value = q.get(k); });
     function bairrosPorCidade() {
       var c = $('[name="cidade"]', fForm), b = $('[name="bairro"]', fForm); if (!c || !b) return;
@@ -469,21 +382,28 @@
     function aplica() {
       var f = {}; new FormData(fForm).forEach(function (v, k) { f[k] = v; });
       var n = 0;
+      var visiveis = {}, futuros = 0;
       cards.forEach(function (c) {
         var ok = true;
         if (f.cidade && c.getAttribute('data-cidade') !== f.cidade) ok = false;
         if (f.bairro && c.getAttribute('data-bairro') !== f.bairro) ok = false;
         if (f.dorms && c.getAttribute('data-dorms').split(',').indexOf(f.dorms) < 0) ok = false;
         if (f.vagas && c.getAttribute('data-vagas').split(',').indexOf(f.vagas) < 0) ok = false;
-        if (f.status && c.getAttribute('data-status') !== f.status) ok = false;
+        var status = c.getAttribute('data-status'), futuro = c.hasAttribute('data-futuro');
+        if (f.status && status !== f.status && !(futuro && f.status === 'lancamento')) ok = false;
+        if (futuro && (f.dorms || f.vagas || f.tamanho || f.tag)) ok = false;
         if (f.tag && c.getAttribute('data-tags').split(',').indexOf(f.tag) < 0) ok = false;
         if (f.tamanho) { var mn = +c.getAttribute('data-amin'), mx = +c.getAttribute('data-amax'), r = { 'ate-30': [0, 30], '31-45': [31, 45], '46-70': [46, 70], 'acima-70': [71, 9999] }[f.tamanho]; if (r && (mx < r[0] || mn > r[1])) ok = false; }
-        c.hidden = !ok; if (ok) n++;
+        c.hidden = !ok; if (ok) { n++; visiveis[c.getAttribute('data-slug')] = true; if (futuro) futuros++; }
       });
+      var grupoFuturo = $('[data-grupo-futuro]'); if (grupoFuturo) grupoFuturo.hidden = futuros === 0;
+      var fotosVisiveis = 0;
+      $$('[data-vitrine-slug]').forEach(function (tile) { tile.hidden = !visiveis[tile.getAttribute('data-vitrine-slug')]; if (!tile.hidden) fotosVisiveis++; });
+      var faixa = $('.vitrine'); if (faixa) faixa.hidden = fotosVisiveis === 0;
       if (cont) cont.textContent = n + (n === 1 ? ' empreendimento encontrado' : ' empreendimentos encontrados');
       if (vazio) vazio.hidden = n > 0;
       var ativos = Object.keys(f).filter(function (k) { return f[k]; }).length, btn = $('.filtros__abrir'); if (btn) btn.textContent = 'FILTRAR' + (ativos ? ' (' + ativos + ')' : '');
-      var qs = new URLSearchParams(); Object.keys(f).forEach(function (k) { if (f[k]) qs.set(k, f[k]); }); var novo = w.location.pathname + (qs.toString() ? '?' + qs : ''); history.replaceState(null, '', novo);
+      var qs = new URLSearchParams(); Object.keys(f).forEach(function (k) { if (f[k]) qs.set(k, f[k]); }); var novo = w.location.pathname + (qs.toString() ? '?' + qs : ''); var ancora = w.location.hash; if (ancora === '#futuro-lancamento' && !futuros) ancora = ''; history.replaceState(null, '', novo + ancora);
       evento('filtro_busca', f);
     }
     function ordena() {
@@ -491,7 +411,10 @@
       if (v === 'menor') arr.sort(function (a, b) { return +a.getAttribute('data-amin') - +b.getAttribute('data-amin'); });
       else if (v === 'maior') arr.sort(function (a, b) { return +b.getAttribute('data-amax') - +a.getAttribute('data-amax'); });
       else arr.sort(function (a, b) { return +a.getAttribute('data-ordem') - +b.getAttribute('data-ordem'); });
-      arr.forEach(function (c) { lista.appendChild(c); }); var fut = $('.card-futuro', lista); if (fut) lista.appendChild(fut); if (vazio) lista.appendChild(vazio);
+      arr.filter(function (c) { return !c.hasAttribute('data-futuro'); }).forEach(function (c) { lista.appendChild(c); });
+      var tituloFuturo = $('[data-grupo-futuro]', lista); if (tituloFuturo) lista.appendChild(tituloFuturo);
+      arr.filter(function (c) { return c.hasAttribute('data-futuro'); }).forEach(function (c) { lista.appendChild(c); });
+      if (vazio) lista.appendChild(vazio);
     }
     on(fForm, 'submit', function (e) { e.preventDefault(); aplica(); if (sheet) sheet.classList.remove('aberto'); });
     on($('[name="cidade"]', fForm), 'change', bairrosPorCidade);

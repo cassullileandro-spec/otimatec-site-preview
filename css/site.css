@@ -2144,12 +2144,12 @@ body.rolou .header__in { background: rgba(18,18,20,.82); box-shadow: 0 14px 34px
   .banner__setas { display: none; }
   .busca { margin-top: 0; }
   /* busca: só cidade e quartos; o resto fica em /imoveis/ */
-  .busca__campos > .campo:nth-of-type(2), .busca__campos > .campo:nth-of-type(3), .busca__campos > .campo:nth-of-type(5), .busca__campos > .campo:nth-of-type(6) { display: none; }
+  #busca-home .busca__campos > .campo:nth-of-type(2), #busca-home .busca__campos > .campo:nth-of-type(3), #busca-home .busca__campos > .campo:nth-of-type(5), #busca-home .busca__campos > .campo:nth-of-type(6) { display: none; }
   .busca__mais { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 14px; font-weight: 500; color: var(--vermelho-600); text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
   .busca__mais .ico { width: 16px; height: 16px; }
 }
 @media (max-width: 1023px) {
-  /* barra de baixo compacta: WhatsApp e Ligar só com ícone, Agendar visita como ação principal */
+  /* barra de baixo compacta: contato comercial e corretor */
   :root { --canais-mobile-h: 72px; }
   .canais--mob { padding: 0 12px calc(10px + env(safe-area-inset-bottom)); background: transparent; }
   .canais--mob .canais__in { height: 56px; display: flex; gap: 8px; padding: 6px; border-radius: 16px; background: rgba(255,255,255,.94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 10px 30px -10px rgba(18,18,20,.35); border: 1px solid rgba(18,18,20,.06); overflow: visible; }
@@ -2674,4 +2674,52 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
   .mapa-regiao__rotulo { display: none; }
   .mapa-regiao__pontos { grid-template-columns: 1fr; gap: 0; }
   .mapa-regiao__legenda { font-size: 11px; line-height: 16px; }
+}
+
+
+/* Apontamentos Edson: catalogo, contatos e plantas sem sobreposicao. */
+.pagina-imoveis .hero-claro, .pagina-entregues .hero-claro { height: auto; min-height: 0; }
+.pagina-imoveis .hero-claro__in, .pagina-entregues .hero-claro__in { padding-top: calc(var(--header-gap) + var(--header-h) + 40px); padding-bottom: 32px; }
+.pagina-imoveis .hero-claro .display, .pagina-entregues .hero-claro .display { max-width: 32ch; }
+.catalogo-nav { display: flex; flex-wrap: wrap; gap: 12px 24px; padding-top: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--borda); }
+.catalogo-nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; border-bottom: 2px solid transparent; }
+.catalogo-nav a[aria-current] { color: var(--vermelho-600); border-color: var(--vermelho-600); }
+.catalogo-futuros { grid-column: 1 / -1; margin-top: 24px; }
+.card-futuro { min-width: 0; }
+.card-futuro__corpo { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.card-futuro__corpo .btn { margin-top: auto; }
+.card-futuro__titulo { font-size: 22px; line-height: 30px; }
+.card-emp__disponivel { color: var(--vermelho-600); font-size: 15px; }
+.entregues-grade .card-emp { max-width: none; }
+.aviso-legal { padding-top: 32px; padding-bottom: 32px; border-top: 1px solid rgba(255,255,255,.16); }
+.aviso-legal h2 { font-size: 16px; line-height: 24px; font-weight: 700; margin-bottom: 16px; }
+.aviso-legal p { max-width: 112ch; font-size: 14px; line-height: 22px; color: #d4d4d8; }
+.aviso-legal p + p { margin-top: 14px; }
+.canais--desk .canais__in { grid-template-columns: 140px repeat(3, minmax(0, 1fr)); }
+.contato-grade--direta { display: block; }
+.contato-grade--direta .contato-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pagina-contato .mais-info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.form__continuar { margin-top: 12px; }
+.form__msg { overflow-wrap: anywhere; }
+.plantas2, .plantas2__lista, .plantas2__painel, .planta__imgs, .planta__info { min-width: 0; }
+.planta__imgs--duas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.planta__img { min-width: 0; max-width: 100%; overflow: hidden; position: relative; }
+.planta__img picture { display: block; width: 100%; height: 100%; }
+.planta__img img { display: block; max-width: 100%; }
+.planta__info { overflow-wrap: anywhere; }
+.planta__info h3 { font-size: 18px; line-height: 26px; }
+.numero-grande--texto { font-size: 28px; line-height: 36px; }
+@media (min-width: 1024px) {
+  .plantas2 { grid-template-columns: 300px minmax(0, 1fr); gap: 32px; }
+  .plantas2 .planta.ativa { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .contato-grade--direta .contato-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1280px) {
+  .plantas2 .planta.ativa { grid-template-columns: minmax(0, 1.35fr) minmax(180px, .8fr); gap: 28px; }
+  .plantas2 .planta--comum.ativa { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 599px) {
+  .planta__imgs--duas, .contato-grade--direta .contato-cards, .pagina-contato .mais-info { grid-template-columns: minmax(0, 1fr); }
+  .catalogo-nav { gap: 8px 16px; }
+  .pagina-imoveis .hero-claro__in, .pagina-entregues .hero-claro__in { padding-top: calc(var(--header-gap) + var(--header-h) + 28px); }
 }
