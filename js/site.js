@@ -107,22 +107,6 @@
 
   if (w.location.hash === '#corretor-parceiro') abrirModal('modal-corretor');
 
-  /* ---------- referências do mapa ilustrado ---------- */
-  $$('[data-mapa-regiao]').forEach(function (mapa) {
-    var pontos = JSON.parse($('[data-pontos-regiao]', mapa).textContent);
-    var botoes = $$('[data-ponto]', mapa), detalhe = $('.mapa-regiao__detalhe', mapa);
-    botoes.forEach(function (botao) {
-      on(botao, 'click', function () {
-        var numero = botao.getAttribute('data-ponto'), ponto = pontos[Number(numero) - 1];
-        botoes.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-ponto') === numero ? 'true' : 'false'); });
-        $('.mapa-regiao__nome', detalhe).textContent = ponto.nome;
-        $('.mapa-regiao__descricao', detalhe).textContent = ponto.descricao;
-        $('.mapa-regiao__rota', detalhe).href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ponto.busca);
-        evento('selecionar_referencia_mapa', { empreendimento: CFG.pagina, ponto: ponto.nome });
-      });
-    });
-  });
-
   /* ---------- formulários: máscara, validação, envio ---------- */
   function mascaraTel(v) {
     v = v.replace(/\D/g, '').slice(0, 11);
@@ -261,7 +245,15 @@
     (function passo(t) { var p = Math.min(1, (t - ini) / dur), v = Math.round(alvo * (1 - Math.pow(1 - p, 3))); el.textContent = pre + v + suf; if (p < 1) requestAnimationFrame(passo); })(ini);
   }
 
-  /* ---------- vitrine: fileiras movidas pelo scroll ---------- */
+  /* ---------- vitrine da home: pausa do movimento contínuo ---------- */
+  var vitrineLoop = $('[data-vitrine-loop]');
+  var pausaVitrine = $('[data-vitrine-pausa]');
+  on(pausaVitrine, 'click', function () {
+    var pausada = vitrineLoop.toggleAttribute('data-vitrine-pausada');
+    pausaVitrine.textContent = pausada ? 'Retomar carrossel' : 'Pausar carrossel';
+  });
+
+  /* ---------- vitrine de imóveis: fileiras movidas pelo scroll ---------- */
   var vitrine = $('[data-vitrine]');
   if (vitrine && !reduz) {
     var fileiras = $$('.vitrine__fileira', vitrine), agendado = false;
