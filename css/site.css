@@ -26,8 +26,9 @@
 
   --container: 1296px;
   --gutter: 24px;
-  --margem: 24px;
-  --secao: 56px;
+  --margem: clamp(24px, calc(12.5vw - 56px), 40px);
+  --grade-12: repeat(12, minmax(0, 1fr));
+  --secao: 80px;
 
   --sombra-card: 0 8px 24px rgba(18,18,20,.08);
   --sombra-card-hover: 0 12px 28px rgba(18,18,20,.14);
@@ -42,13 +43,10 @@
 }
 
 @media (min-width: 768px) {
-  :root { --margem: 40px; --secao: 72px; }
+  :root { --margem: clamp(40px, calc(12.5vw - 72px), 56px); }
 }
 @media (min-width: 1024px) {
-  :root { --margem: 56px; --secao: 96px; }
-}
-@media (min-width: 1280px) {
-  :root { --margem: 108px; }
+  :root { --margem: clamp(56px, calc(20.3125vw - 152px), 108px); }
 }
 
 /* ---------- Reset ---------- */
@@ -79,7 +77,7 @@ ul, ol { padding: 0; list-style: none; }
 
 /* ---------- Layout ---------- */
 .container { width: 100%; max-width: calc(var(--container) + var(--margem) * 2); margin: 0 auto; padding-left: var(--margem); padding-right: var(--margem); }
-.secao { padding-top: var(--secao); padding-bottom: var(--secao); }
+.secao { padding-block: var(--secao); }
 .secao--cinza { background: var(--cinza-100); }
 .secao--escura { background: var(--grafite-900); color: var(--branco); }
 .secao--vinho { background: var(--vinho-900); color: var(--branco); }
@@ -395,8 +393,7 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 }
 
 /* ---------- Busca "Encontre o seu apê" ---------- */
-.busca { position: relative; z-index: 4; margin-top: 0; }
-@media (min-width: 1024px) { .busca { margin-top: -60px; } }
+.busca { position: relative; z-index: 4; }
 .busca__card { background: var(--branco); box-shadow: var(--sombra-card); padding: 24px; }
 @media (min-width: 768px) { .busca__card { padding: 40px; } }
 .busca__titulo { font-size: 22px; line-height: 28px; font-weight: 700; color: var(--vermelho-600); margin-bottom: 20px; }
@@ -436,7 +433,7 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 
 /* ---------- Números (Home / Sobre) ---------- */
 .historia { display: grid; gap: 40px; align-items: center; }
-@media (min-width: 1024px) { .historia { grid-template-columns: 1.1fr 1fr; gap: 64px; } }
+@media (min-width: 1024px) { .historia { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); } }
 .historia p { margin-top: 16px; }
 .cards-num { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .card-num { background: var(--cinza-100); padding: 24px 20px; position: relative; }
@@ -518,7 +515,15 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 
 /* ---------- Listagem /imoveis ---------- */
 .listagem { display: grid; gap: 32px; align-items: start; }
-@media (min-width: 1024px) { .listagem { grid-template-columns: 300px 1fr; } }
+@media (min-width: 1024px) {
+  .listagem { grid-template-columns: var(--grade-12); gap: var(--gutter); }
+  .listagem .bottom-sheet__painel { grid-column: span 4; }
+  .listagem > :last-child { grid-column: span 8; }
+}
+@media (min-width: 1280px) {
+  .listagem .bottom-sheet__painel { grid-column: span 3; }
+  .listagem > :last-child { grid-column: span 9; }
+}
 .filtros { background: var(--branco); box-shadow: var(--sombra-card); padding: 24px; display: grid; gap: 16px; }
 @media (min-width: 1024px) { .filtros { position: sticky; top: calc(var(--header-h) + 24px); } }
 .filtros h2 { font-size: 20px; line-height: 28px; }
@@ -536,8 +541,8 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 .listagem__topo .campo select { min-height: 44px; width: auto; }
 .listagem__contagem { font-size: 14px; font-weight: 600; color: var(--cinza-500); }
 .listagem__grade { display: grid; gap: var(--gutter); grid-template-columns: 1fr; }
-@media (min-width: 768px) { .listagem__grade { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1280px) { .listagem__grade { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px) { .listagem__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .listagem__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .vazio { background: var(--branco); box-shadow: var(--sombra-card); padding: 40px 24px; text-align: center; grid-column: 1 / -1; }
 .vazio p { color: var(--cinza-500); margin: 8px 0 20px; }
 
@@ -681,7 +686,7 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 
 /* ---------- Sobre ---------- */
 .duas-col { display: grid; gap: 32px; align-items: center; }
-@media (min-width: 1024px) { .duas-col { grid-template-columns: 1fr 1fr; gap: 64px; } }
+@media (min-width: 1024px) { .duas-col { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); } }
 .duas-col p + p { margin-top: 16px; }
 .duas-col .midia { aspect-ratio: 4 / 5; }
 .assinatura { display: flex; gap: 16px; align-items: center; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--borda); }
@@ -710,7 +715,7 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 .timeline__item::before { content: ""; position: absolute; top: -6px; left: 0; width: 12px; height: 12px; background: var(--vermelho-600); }
 .timeline__ano { font-size: 32px; line-height: 36px; font-weight: 800; color: var(--vermelho-600); }
 .timeline__texto { font-size: 14px; line-height: 22px; margin-top: 8px; }
-.faixa-cta { background: var(--vinho-900); color: var(--branco); padding: 56px 0; }
+.faixa-cta { background: var(--vinho-900); color: var(--branco); padding-block: var(--secao); }
 .faixa-cta .container { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; }
 .faixa-cta h2 { max-width: 30ch; }
 .faixa-cta--cinza { background: var(--cinza-100); color: var(--grafite-900); }
@@ -975,7 +980,6 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
   .banner__img { border-radius: var(--r-xl); }
   .banner__img::after { background: linear-gradient(90deg, rgba(18,18,20,.88) 0%, rgba(18,18,20,.35) 50%, rgba(18,18,20,0) 75%); }
   .banner__controles { bottom: 40px; }
-  .busca { margin-top: -72px; }
 }
 .banner__selo { border-radius: var(--r-pill); background: rgba(255,255,255,.08); backdrop-filter: blur(8px); border-color: rgba(255,255,255,.18); }
 .banner__bolinhas button { width: 8px; height: 8px; transition: width var(--dur) var(--ease); }
@@ -1153,7 +1157,6 @@ h1, h2, h3, .display { text-wrap: balance; }
 .faq details p { padding-top: 0; }
 .entregue { padding: var(--secao) 0; }
 .emp-sobre .lead { margin-top: 0; }
-.busca + .secao { padding-top: calc(var(--secao) - 16px); }
 
 /* Faixa de título: proporção e respiro */
 .faixa-titulo { padding: 36px 0 32px; min-height: 0; }
@@ -1202,11 +1205,12 @@ h2, h3 { text-wrap: pretty; }
   .bento .b-r2 { grid-row: span 2; }
 }
 @media (min-width: 1024px) {
-  .bento { gap: 20px; }
-  .bento .b-2 { grid-column: span 2; }
-  .bento .b-3 { grid-column: span 3; }
-  .bento .b-4 { grid-column: span 4; }
-  .bento .b-6 { grid-column: span 6; }
+  .bento { grid-template-columns: var(--grade-12); gap: var(--gutter); }
+  .bento > * { grid-column: span 6; }
+  .bento .b-2 { grid-column: span 4; }
+  .bento .b-3 { grid-column: span 6; }
+  .bento .b-4 { grid-column: span 8; }
+  .bento .b-6 { grid-column: 1 / -1; }
 }
 .bento__card {
   position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 12px;
@@ -1310,8 +1314,6 @@ h3, .h3 { letter-spacing: -.01em; }
 .banner__tag .tag { background: rgba(255,255,255,.14); backdrop-filter: blur(8px); }
 
 /* Busca: barra fina em vidro, sobreposta ao hero */
-.busca { margin-top: 24px; }
-@media (min-width: 1024px) { .busca { margin-top: -84px; } }
 .busca__barra { background: rgba(255,255,255,.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(18,18,20,.06); border-radius: var(--r-lg); padding: 20px 20px 16px; box-shadow: 0 30px 60px -30px rgba(18,18,20,.35); }
 @media (min-width: 1024px) { .busca__barra { padding: 22px 28px 18px; } }
 .busca__titulo { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--cinza-500); margin: 0 0 14px 4px; font-weight: 500; }
@@ -1330,7 +1332,6 @@ h3, .h3 { letter-spacing: -.01em; }
 .busca .chips { margin-top: 14px; gap: 6px; }
 .busca .chip { background: transparent; border-color: transparent; color: var(--cinza-500); font-weight: 500; font-size: 13px; padding: 6px 10px; min-height: 32px; }
 .busca .chip:hover { color: var(--vermelho-600); background: var(--tinta-vermelha); }
-.busca + .secao { padding-top: var(--secao); }
 
 /* Topo do empreendimento e heros internos seguem o mesmo tom */
 .emp-topo__texto .h1 { font-weight: 500; letter-spacing: -.03em; }
@@ -1605,9 +1606,6 @@ h3, .h3 { letter-spacing: -.01em; }
 .carrossel__rodape { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; }
 .carrossel__rodape .carrossel__setas { margin-top: 0; }
 @media (max-width: 479px) { .carrossel__rodape .btn { flex: 1; } }
-/* respiro entre blocos escuros arredondados vizinhos */
-:is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta, .hero-escuro) + :is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta) { margin-top: 16px; }
-@media (min-width: 1024px) { :is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta, .hero-escuro) + :is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta) { margin-top: 20px; } }
 :is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta) + .rodape { margin-top: 20px; }
 main > :is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta):last-child { margin-bottom: 20px; }
 main:has(> :is(.secao--escura, .secao--vinho, .faixa-contato, .faixa-cta):last-child) + .rodape { margin-top: 0; }
@@ -2150,7 +2148,6 @@ body.rolou .header__in { background: rgba(18,18,20,.82); box-shadow: 0 14px 34px
   .banner__controles { bottom: calc(22px + env(safe-area-inset-bottom)); }
   .banner__controles .container { justify-content: center; }
   .banner__setas { display: none; }
-  .busca { margin-top: 0; }
   /* busca: só cidade e quartos; o resto fica em /imoveis/ */
   #busca-home .busca__campos > .campo:nth-of-type(2), #busca-home .busca__campos > .campo:nth-of-type(3), #busca-home .busca__campos > .campo:nth-of-type(5), #busca-home .busca__campos > .campo:nth-of-type(6) { display: none; }
   .busca__mais { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; color: var(--vermelho-600); text-decoration: underline; text-underline-offset: 3px; }
@@ -2218,7 +2215,6 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 
 /* mais de uma década + por que escolher */
 .decada { display: grid; gap: 32px; align-items: start; }
-@media (min-width: 1024px) { .decada { grid-template-columns: 1.2fr 1fr; gap: 72px; } }
 .decada .apoio { color: var(--cinza-500); }
 .decada__porque { border-left: 2px solid var(--vermelho-600); padding-left: 24px; }
 .decada__porque .h3 { color: var(--grafite-900); }
@@ -2228,7 +2224,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .qualidade .h2 { max-width: 28ch; }
 .qualidade__texto { margin-top: 8px; color: var(--cinza-500); }
 .qualidade__texto p { margin: 0 0 16px; }
-@media (min-width: 1024px) { .qualidade__texto { columns: 2; column-gap: 48px; } .qualidade__texto p { break-inside: avoid; } }
+@media (min-width: 1024px) { .qualidade__texto { columns: 2; column-gap: var(--gutter); } .qualidade__texto p { break-inside: avoid; } }
 .qualidade__texto b { color: var(--grafite-900); }
 .certs__titulo { margin-top: 48px; }
 .certs { display: grid; gap: 16px; margin-top: 20px; }
@@ -2261,7 +2257,12 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .rodape__titulo::before { content: none; }
 .rodape__titulo a { color: inherit; }
 .rodape__titulo a:hover { color: var(--branco); }
-@media (min-width: 1280px) { .rodape__faixa2 { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .rodape__faixa2 { column-gap: var(--gutter); } }
+@media (min-width: 1280px) {
+  .rodape__faixa2 { grid-template-columns: var(--grade-12); }
+  .rodape__col { grid-column: span 2; }
+  .rodape__col:nth-child(n+4) { grid-column: span 3; }
+}
 @media (min-width: 1024px) { .rodape__faixa3 { grid-template-columns: 1fr; } }
 
 /* =====================================================================
@@ -2269,7 +2270,6 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
    ===================================================================== */
 
 /* home: vitrine logo abaixo da busca, sem título */
-.vitrine--sem-titulo { padding-top: 24px; }
 .vitrine--sem-titulo .vitrine__faixa { margin-top: 0; }
 .vitrine__topo .apoio { margin-top: 10px; }
 
@@ -2278,7 +2278,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 
 /* home: década — texto à esquerda, foto de obra à direita */
 .decada { display: grid; gap: 32px; align-items: center; }
-@media (min-width: 1024px) { .decada { grid-template-columns: 1.05fr 1fr; gap: 64px; } }
+@media (min-width: 1024px) { .decada { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); } }
 .decada__porque { margin-top: 32px; }
 .decada__foto { border-radius: var(--raio-midia); overflow: hidden; aspect-ratio: 4 / 3; }
 .decada__foto picture, .decada__foto img, .decada__foto .placeholder { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; }
@@ -2301,7 +2301,6 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 /* formulários curtos: checkbox de autorização */
 .campo--check .check { font-size: 13px; line-height: 19px; color: var(--cinza-500); }
 .campo--check a { color: var(--vermelho-600); text-decoration: underline; text-underline-offset: 2px; }
-.secao--garanta { padding-top: calc(var(--secao) / 2); }
 
 /* rodapé */
 .rodape__faixa1 .container { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
@@ -2329,9 +2328,10 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 
 /* imóveis: filtros laterais iguais aos da home */
 .filtros--icones .busca__titulo { margin: 0 0 4px; }
-.filtros--icones .busca__campos { grid-template-columns: 1fr !important; gap: 8px; }
+.filtros--icones .busca__campos { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.filtros--icones .campo--sel { grid-template-columns: minmax(0, 1fr); padding-inline: 12px; }
+.filtros--icones .campo--sel :is(label, select) { grid-column: 1; }
 .filtros__btn { justify-self: stretch; }
-.secao--listagem { padding-top: 40px; }
 .vitrine h1.h2 { font-size: clamp(30px, 3.4vw, 44px); }
 
 /* formulário simulador */
@@ -2384,7 +2384,11 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .emp-his p { margin-top: 8px; max-width: 70ch; color: var(--cinza-500); }
 
 .emp-bairro { display: grid; gap: 40px; align-items: start; }
-@media (min-width: 1024px) { .emp-bairro { grid-template-columns: 1fr 1.3fr; gap: 64px; } }
+@media (min-width: 1024px) {
+  .emp-bairro { grid-template-columns: var(--grade-12); gap: var(--gutter); }
+  .emp-bairro__cabecalho { grid-column: span 5; }
+  .emp-bairro__texto { grid-column: span 7; }
+}
 .emp-bairro__cabecalho .h2 { letter-spacing: 0; }
 .emp-bairro__texto p + p { margin-top: 14px; }
 .emp-bairro__texto p { font-size: 16px; line-height: 26px; }
@@ -2400,7 +2404,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .emp-faixa-cidade { margin: 0; background: var(--cinza-100); }
 .emp-faixa-cidade__img { width: 100%; }
 .emp-faixa-cidade__img picture, .emp-faixa-cidade__img img { width: 100%; height: auto; display: block; border-radius: 0; }
-.emp-faixa-cidade__texto { padding-top: 28px; padding-bottom: 28px; }
+.emp-faixa-cidade__texto { padding-top: 28px; }
 .emp-faixa-cidade__texto .h2 { color: var(--grafite-900); max-width: 32ch; }
 
 .proximidades { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2424,7 +2428,6 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .lazer-icones__ico .ico { width: 44px; height: 44px; stroke: var(--grafite-900); stroke-width: 1.5; }
 
 .plantas2 { display: grid; gap: 28px; align-items: start; }
-@media (min-width: 1024px) { .plantas2 { grid-template-columns: 380px 1fr; gap: 48px; } }
 .plantas2__lista { display: flex; flex-direction: column; border-top: 1px solid var(--borda); }
 @media (max-width: 1023px) { .plantas2__lista { max-height: 320px; overflow-y: auto; } }
 .aba.plantas2__item { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 52px; padding: 12px 6px; border: 0; border-bottom: 1px solid var(--borda); border-radius: 0; background: transparent; text-transform: none; letter-spacing: 0; font-size: 15px; font-weight: 400; text-align: left; color: var(--grafite-900); }
@@ -2441,7 +2444,11 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 @media (min-width: 1024px) { .emp-simule { grid-template-columns: 1fr 1.3fr; gap: 64px; } }
 
 .emp-mais { display: grid; gap: 32px; align-items: start; }
-@media (min-width: 1024px) { .emp-mais { grid-template-columns: 1.4fr 1fr; gap: 64px; } }
+@media (min-width: 1024px) {
+  .emp-mais { grid-template-columns: var(--grade-12); gap: var(--gutter); }
+  .emp-mais__form { grid-column: span 7; }
+  .emp-mais__ctas { grid-column: span 5; }
+}
 .emp-mais__form > p { margin: 4px 0 20px; color: var(--cinza-500); }
 .emp-mais__ctas { display: grid; gap: 16px; }
 .emp-mais__cta { border-top: 1px solid var(--borda); padding: 24px 0; display: grid; gap: 12px; justify-items: start; }
@@ -2460,7 +2467,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .sobre-topo__img, .sobre-topo__img picture, .sobre-topo__img img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; display: block; border-radius: 0; }
 .sobre-texto .h1 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.12; max-width: 24ch; }
 .sobre-texto__col { margin-top: 8px; }
-@media (min-width: 1024px) { .sobre-texto__col { columns: 2; column-gap: 48px; } .sobre-texto__col p { break-inside: avoid; } }
+@media (min-width: 1024px) { .sobre-texto__col { columns: 2; column-gap: var(--gutter); } .sobre-texto__col p { break-inside: avoid; } }
 .sobre-texto__col p { margin: 0 0 16px; font-size: 17px; line-height: 27px; }
 .sobre-texto__destaque { margin-top: 16px; font-size: 19px; line-height: 29px; color: var(--grafite-900); border-left: 3px solid var(--vermelho-600); padding-left: 18px; }
 .faixa-cta .apoio { margin-top: 8px; }
@@ -2536,13 +2543,17 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 
 /* página do empreendimento: foto real ao lado da apresentação (Harmonia) */
 .emp-apres--foto { max-width: none; display: grid; gap: 32px; align-items: center; }
-@media (min-width: 1024px) { .emp-apres--foto { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; } }
+@media (min-width: 1024px) {
+  .emp-apres--foto { grid-template-columns: var(--grade-12); gap: var(--gutter); }
+  .emp-apres__foto { grid-column: span 5; }
+  .emp-apres--foto .emp-apres__corpo { grid-column: span 7; }
+}
 .emp-apres__foto > div { position: relative; border-radius: var(--raio-midia); overflow: hidden; aspect-ratio: 4 / 5; cursor: zoom-in; }
 .emp-apres__foto picture, .emp-apres__foto img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0; }
 
 /* Sobre: 4 números em linha */
 .cards-num--4 { margin-top: 16px; }
-@media (min-width: 1024px) { .cards-num--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .cards-num--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gutter); } }
 
 /* Contato: agendamento com escolha do empreendimento no card */
 .contato-agendar .opcoes--emp { display: grid; gap: 8px; margin-top: 4px; }
@@ -2711,13 +2722,19 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .planta__info h3 { font-size: 18px; line-height: 26px; }
 .numero-grande--texto { font-size: 28px; line-height: 36px; }
 @media (min-width: 1024px) {
-  .plantas2 { grid-template-columns: 300px minmax(0, 1fr); gap: 32px; }
+  .plantas2 { grid-template-columns: var(--grade-12); gap: var(--gutter); }
+  .plantas2__lista { grid-column: span 4; }
+  .plantas2__painel { grid-column: span 8; }
   .plantas2 .planta.ativa { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .contato-grade--direta .contato-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .contato-grade--direta .contato-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--gutter); }
+  .pagina-contato .mais-info, .proximidades, .lazer-icones { column-gap: var(--gutter); }
 }
 @media (min-width: 1280px) {
-  .plantas2 .planta.ativa { grid-template-columns: minmax(0, 1.35fr) minmax(180px, .8fr); gap: 28px; }
-  .plantas2 .planta--comum.ativa { grid-template-columns: minmax(0, 1fr); }
+  .plantas2__lista { grid-column: span 3; }
+  .plantas2__painel { grid-column: span 9; }
+  .plantas2 .planta.ativa:not(.planta--comum) { grid-template-columns: repeat(9, minmax(0, 1fr)); gap: var(--gutter); }
+  .plantas2 .planta.ativa:not(.planta--comum) > :first-child { grid-column: span 6; }
+  .plantas2 .planta.ativa:not(.planta--comum) > .planta__info { grid-column: span 3; }
 }
 @media (max-width: 599px) {
   .planta__imgs--duas, .contato-grade--direta .contato-cards, .pagina-contato .mais-info { grid-template-columns: minmax(0, 1fr); }
