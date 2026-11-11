@@ -1518,12 +1518,13 @@ h3, .h3 { letter-spacing: -.01em; }
 .vitrine__rotulo span { font-size: 11px; line-height: 16px; color: rgba(255,255,255,.75); letter-spacing: .02em; }
 .vitrine__tag { position: absolute; top: 12px; left: 12px; z-index: 1; font-size: 10.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 5px 10px; border-radius: var(--r-pill); background: rgba(255,255,255,.16); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 @media (prefers-reduced-motion: reduce) { .vitrine__faixa { transform: none; } .vitrine__fileira { width: auto; flex-wrap: nowrap; overflow-x: auto; transition: none; } }
-.vitrine__pausa { display: none; }
 @media (prefers-reduced-motion: no-preference) {
-  .js .vitrine__pausa { display: inline-flex; margin-left: auto; margin-bottom: 16px; }
   .js [data-vitrine-loop] .vitrine__fileira { animation: vitrine-loop 90s linear infinite; }
   .js [data-vitrine-loop] .vitrine__fileira[data-sentido="1"] { animation-direction: reverse; }
-  .js [data-vitrine-loop][data-vitrine-pausada] .vitrine__fileira, .js [data-vitrine-loop] .vitrine__faixa:focus-within .vitrine__fileira { animation-play-state: paused; }
+  .js [data-vitrine-loop] .vitrine__faixa:focus-within .vitrine__fileira { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .js [data-vitrine-loop] .vitrine__faixa:hover .vitrine__fileira { animation-play-state: paused; }
 }
 @media (prefers-reduced-motion: reduce) {
   [data-vitrine-loop] .vitrine__item[aria-hidden="true"] { display: none; }

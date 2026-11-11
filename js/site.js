@@ -245,14 +245,6 @@
     (function passo(t) { var p = Math.min(1, (t - ini) / dur), v = Math.round(alvo * (1 - Math.pow(1 - p, 3))); el.textContent = pre + v + suf; if (p < 1) requestAnimationFrame(passo); })(ini);
   }
 
-  /* ---------- vitrine da home: pausa do movimento contínuo ---------- */
-  var vitrineLoop = $('[data-vitrine-loop]');
-  var pausaVitrine = $('[data-vitrine-pausa]');
-  on(pausaVitrine, 'click', function () {
-    var pausada = vitrineLoop.toggleAttribute('data-vitrine-pausada');
-    pausaVitrine.textContent = pausada ? 'Retomar carrossel' : 'Pausar carrossel';
-  });
-
   /* ---------- vitrine de imóveis: fileiras movidas pelo scroll ---------- */
   var vitrine = $('[data-vitrine]');
   if (vitrine && !reduz) {
