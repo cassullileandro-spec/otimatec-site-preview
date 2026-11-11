@@ -394,6 +394,8 @@ body.rodape-visivel .canais--desk { opacity: 0; transform: translateY(100%); poi
 
 /* ---------- Busca "Encontre o seu apê" ---------- */
 .busca { position: relative; z-index: 4; }
+@media (min-width: 768px) { .busca { margin-top: 24px; } }
+@media (min-width: 1024px) { .busca { margin-top: -84px; } }
 .busca__card { background: var(--branco); box-shadow: var(--sombra-card); padding: 24px; }
 @media (min-width: 768px) { .busca__card { padding: 40px; } }
 .busca__titulo { font-size: 22px; line-height: 28px; font-weight: 700; color: var(--vermelho-600); margin-bottom: 20px; }
