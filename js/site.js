@@ -245,25 +245,6 @@
     (function passo(t) { var p = Math.min(1, (t - ini) / dur), v = Math.round(alvo * (1 - Math.pow(1 - p, 3))); el.textContent = pre + v + suf; if (p < 1) requestAnimationFrame(passo); })(ini);
   }
 
-  /* ---------- vitrine de imóveis: fileiras movidas pelo scroll ---------- */
-  var vitrine = $('[data-vitrine]');
-  if (vitrine && !reduz) {
-    var fileiras = $$('.vitrine__fileira', vitrine), agendado = false;
-    function moveVitrine() {
-      agendado = false;
-      var r = vitrine.getBoundingClientRect(), vh = w.innerHeight;
-      if (r.bottom < -200 || r.top > vh + 200) return;
-      var p = (vh - r.top) / (vh + r.height); // 0 ao entrar, 1 ao sair
-      fileiras.forEach(function (f) {
-        var s = +f.getAttribute('data-sentido'), metade = f.scrollWidth / 2, alcance = Math.max(0, Math.min(metade - w.innerWidth * .5, w.innerWidth * .45));
-        var x = s < 0 ? -alcance * p : -alcance * (1 - p);
-        f.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,0)';
-      });
-    }
-    on(w, 'scroll', function () { if (!agendado) { agendado = true; requestAnimationFrame(moveVitrine); } }, { passive: true });
-    on(w, 'resize', moveVitrine); moveVitrine();
-  }
-
   /* ---------- cenas ilustradas: replay no hover ---------- */
   $$('.bento__card').forEach(function (card) {
     var palco = $('.bento__palco', card); if (!palco) return;
@@ -353,6 +334,29 @@
   var lista = $('#lista-imoveis'), sheet = $('#filtros-sheet');
   if (lista) {
     var fForm = $('#form-filtros'), cards = $$('[data-card]', lista), cont = $('#contagem'), vazio = $('#vazio'), ordem = $('#ordenar');
+    var vitrine = $('[data-vitrine-loop]'), fileirasVitrine = vitrine ? $$('.vitrine__fileira', vitrine) : [];
+    function preencheVitrine() {
+      fileirasVitrine.forEach(function (fileira) {
+        $$('[data-vitrine-extra]', fileira).forEach(function (tile) { tile.remove(); });
+        var fotos = $$('[data-vitrine-slug]:not([aria-hidden]):not([hidden])', fileira);
+        fileira.hidden = fotos.length === 0;
+        if (fileira.hidden) return;
+        var gap = parseFloat(w.getComputedStyle(fileira).columnGap);
+        var ciclo = fotos.reduce(function (largura, tile) { return largura + tile.offsetWidth + gap; }, 0);
+        var extras = (Math.ceil((vitrine.clientWidth + gap) / ciclo) - 1) * 2;
+        // O loop percorre metade da fileira, então cada sequência extra precisa aparecer em dobro.
+        for (var i = 0; i < extras; i++) {
+          fotos.forEach(function (tile) {
+            var copia = tile.cloneNode(true);
+            copia.setAttribute('aria-hidden', 'true');
+            copia.setAttribute('data-vitrine-extra', '');
+            copia.tabIndex = -1;
+            fileira.appendChild(copia);
+          });
+        }
+      });
+    }
+    on(w, 'resize', preencheVitrine, { passive: true });
     var q = new URLSearchParams(w.location.search);
     var bairroAntigo = q.get('bairro'), aliases = { 'Vila São Ricardo': 'Picanço', 'Vila Gustavo': 'Tucuruvi', 'Vila das Palmeiras': 'Vila Augusta' };
     if (aliases[bairroAntigo]) q.set('bairro', aliases[bairroAntigo]);
@@ -382,8 +386,14 @@
       });
       var grupoFuturo = $('[data-grupo-futuro]'); if (grupoFuturo) grupoFuturo.hidden = futuros === 0;
       var fotosVisiveis = 0;
-      $$('[data-vitrine-slug]').forEach(function (tile) { tile.hidden = !visiveis[tile.getAttribute('data-vitrine-slug')]; if (!tile.hidden) fotosVisiveis++; });
-      var faixa = $('.vitrine'); if (faixa) faixa.hidden = fotosVisiveis === 0;
+      if (vitrine) {
+        $$('[data-vitrine-slug]', vitrine).forEach(function (tile) {
+          tile.hidden = !visiveis[tile.getAttribute('data-vitrine-slug')];
+          if (!tile.hidden) fotosVisiveis++;
+        });
+        vitrine.hidden = fotosVisiveis === 0;
+        preencheVitrine();
+      }
       if (cont) cont.textContent = n + (n === 1 ? ' empreendimento encontrado' : ' empreendimentos encontrados');
       if (vazio) vazio.hidden = n > 0;
       var ativos = Object.keys(f).filter(function (k) { return f[k]; }).length, btn = $('.filtros__abrir'); if (btn) btn.textContent = 'FILTRAR' + (ativos ? ' (' + ativos + ')' : '');
