@@ -2706,6 +2706,7 @@ body.rodape-visivel .canais--mob { opacity: 0; transform: translateY(110%); poin
 .card-futuro__titulo { font-size: 22px; line-height: 30px; }
 .card-emp__disponivel { color: var(--vermelho-600); font-size: 15px; }
 .entregues-grade .card-emp { max-width: none; }
+.entregues-grade [data-slug="harmonia-class"] .card-emp__img img { object-position: center 25%; }
 .aviso-legal { padding-top: 32px; padding-bottom: 32px; border-top: 1px solid rgba(255,255,255,.16); }
 .aviso-legal h2 { font-size: 16px; line-height: 24px; font-weight: 700; margin-bottom: 16px; }
 .aviso-legal p { max-width: 112ch; font-size: 14px; line-height: 22px; color: #d4d4d8; }
